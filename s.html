@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trim Text</title>
+    <style>
+        body {
+            background-size: cover;
+            color: rgb(255, 255, 255);
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea, input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 15px;
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный цвет */
+            color: #ffffff; /* Белый цвет текста */
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #36aa5bd8; /* Зеленоватый цвет */
+            color: #fefefe; /* Белый текст */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #547026dc; /* Темнее зеленоватый цвет при наведении */
+        }
+
+        #trimmedText {
+        margin-top: 10px;
+        font-size: 14px;
+        max-height: 200px; /* Ограничьте максимальную высоту поля результата */
+        overflow: auto; /* Добавьте прокрутку, если текст не помещается */
+        /* ... остальные стили ... */
+    }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        /* Additional styling for layout */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .count-display {
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        #changeBackgroundButton {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background-color: #36aa5bd8;
+            color: #fefefe;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #changeBackgroundButton:hover {
+            background-color: #547026dc;
+        }
+
+        .center-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    </style>
+    <html>
+        <head>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background: url('images/negr120.jpg') no-repeat center center fixed;
+                    background-size: cover;
+                }
+        
+                /* Ваши остальные стили */
+            </style>
+</head>
+<body>
+    <div class="container center-content">
+        <div class="text-area">
+            <label for="inputText">Текст</label>
+            <br>
+            <textarea id="inputText" rows="4" cols="50" oninput="updateCharacterCount()"></textarea>
+            <br>
+            <label for="trimLength">Неше обрезка</label>
+            <br>
+            <input type="number" id="trimLength" min="0" oninput="autoTrim()">
+            <br>
+            <input type="number" id="removeCount" min="0" max="5000">
+            <button onclick="removeText()">Кетыру</button>
+            <br>
+            <button onclick="trimText()">Обрезка</button>
+            <button onclick="copyTrimmedText()">Скопировать</button>
+            <div class="container">
+                <!-- ... остальной код ... -->
+                <button id="changeBackgroundButton" onclick="changeBackground()">F</button>
+                <br>
+            <div id="trimmedText"></div>
+            <br>
+            <input type="hidden" id="truncatedLength">
+            <br>
+        </div>
+    </div>
+<script>
+    var backgroundImages = ['images/negr12.jpg', 'images/negr2.gif', 'images/negr.avif', 'images/negr3.gif', 'images/negr4.gif'];
+        var currentBackgroundIndex = 0;
+    // Остальной JavaScript-код...
+</script>
+</body>
+</html>
+<script>
+        // Previous state and current state objects for undo/redo functionality
+        var previousState = {
+            inputText: "",
+            trimLength: ""
+        };
+
+        var currentState = {
+            inputText: "",
+            trimLength: ""
+        };
+        
+        function trimText() {
+    var inputText = document.getElementById('inputText').value;
+    var trimLength = document.getElementById('trimLength').value;
+    var trimmedText = "";
+
+    // Check if the text length is greater than the trim length
+    if (inputText.length > trimLength) {
+        // Find the last occurrence of "." before the trim length
+        var lastPeriodIndex = inputText.lastIndexOf(".", trimLength);
+
+        // If no "." is found before the trim length, just take the first part
+        if (lastPeriodIndex === -1) {
+            trimmedText = inputText.substring(0, trimLength);
+        } else {
+            trimmedText = inputText.substring(0, lastPeriodIndex + 1);
+        }
+    } else {
+        trimmedText = inputText;
+    }
+
+    // Highlight the last trimmed sentence
+
+    document.getElementById('trimmedText').innerText = trimmedText;
+
+    previousState = { ...currentState }; // Save previous state for undo
+    currentState.inputText = inputText;
+    currentState.trimLength = trimLength;
+
+    // Обновление счетчика на основе текста в поле результатов
+    var trimmedLength = trimmedText.length;
+    document.getElementById('removeCount').value = trimmedLength;
+}
+
+
+
+        function updateCharacterCount() {
+            var inputText = document.getElementById('inputText').value;
+            var characterCount = inputText.length;
+            document.getElementById('trimmedText').innerText = characterCount + " characters";
+
+        }
+
+        function autoTrim() {
+            trimText();
+        }
+
+        function removeTrimmedText() {
+            var trimmedText = document.getElementById('trimmedText').innerText;
+            var inputText = document.getElementById('inputText').value;
+            var newText = inputText.replace(trimmedText, '');
+            document.getElementById('inputText').value = newText;
+        }
+
+
+        async function copyTrimmedText() {
+            var trimmedText = document.getElementById('trimmedText').innerText;
+            try {
+                await navigator.clipboard.writeText(trimmedText);
+                console.log('Text copied to clipboard:', trimmedText);
+            } catch (error) {
+                console.error('Failed to copy text to clipboard:', error);
+            }
+        }
+
+        function removeText() {
+    var inputText = document.getElementById('inputText').value;
+    var removeCount = document.getElementById('removeCount').value;
+
+    if (removeCount > 0 && inputText.length >= removeCount) {
+        var newText = inputText.substring(removeCount);
+        document.getElementById('inputText').value = newText;
+        updateCharacterCount(); // Обновляем счетчик символов в поле результатов
+
+        // Обновляем счетчик на основе нового текста
+        var trimmedLength = newText.length;
+        document.getElementById('removeCount').value = trimmedLength;
+    }
+}
+
+        function autoTrim() {
+        trimText();
+        var trimmedLength = document.getElementById('trimmedText').innerText.length;
+       
+        document.getElementById('removeCount').value = trimmedLength;
+    }
+
+    function changeBackground() {
+    var backgrounds = [
+        'images/negr12.jpg',
+        'images/negr2.gif',
+        'images/negr.avif',
+        'images/negr3.gif',
+        'images/negr4.gif'
+    ];
+
+    var randomIndex = Math.floor(Math.random() * backgrounds.length);
+    var selectedBackground = backgrounds[randomIndex];
+
+    document.body.style.background = "url('" + selectedBackground + "') no-repeat center center fixed";
+    document.body.style.backgroundSize = "cover";
+}
+    
+   </script>
+</body>
+</html>
