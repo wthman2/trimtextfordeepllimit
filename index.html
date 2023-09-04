@@ -103,26 +103,18 @@
         <head>
             <style>
                 body {
-                    margin: 0;
-                    padding: 0;
-                    background: url('images/negr120.jpg') no-repeat center center fixed;
-                    background-size: cover;
-                }
-        
-                /* Ваши остальные стили */
-                @media (max-width: 600px) {
-  body {
-    background-size: auto 100%; 
-  }
+    margin: 0;
+    padding: 0;
+    background: url('images/negr120.jpg') no-repeat center center;
+    background-size: cover;
 }
 
-@media (min-width: 600px) {
-  body {
-    background-size: cover; 
-  }
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll; /* Изменение на скроллинг на мобильных устройствах */
+    }
 }
-
-   </style>
+ </style>
 </head>
 <body>
     <div class="container center-content">
